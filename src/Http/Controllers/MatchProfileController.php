@@ -10,9 +10,9 @@ use Illuminate\Http\Response;
 use Liberu\RealEstate\Matching\Application\CalculateMatchScore;
 use Liberu\RealEstate\Matching\Application\CreateMatchProfile;
 use Liberu\RealEstate\Matching\Application\DeleteMatchProfile;
+use Liberu\RealEstate\Matching\Application\RankPropertyRecommendations;
 use Liberu\RealEstate\Matching\Application\UpdateMatchProfile;
 use Liberu\RealEstate\Matching\Application\UpdateMatchProfileSection;
-use Liberu\RealEstate\Matching\Application\RankPropertyRecommendations;
 use Liberu\RealEstate\Matching\Domain\MatchProfileSection;
 use Liberu\RealEstate\Matching\Models\MatchProfile;
 use Liberu\RealEstate\MatchingApi\Http\Resources\MatchProfileResource;
@@ -97,7 +97,12 @@ final class MatchProfileController
             'excluded_ids.*' => ['string', 'max:80'],
         ]);
 
-        return (new MatchScoreResource(['recommendations' => $rank->handle($data['criteria'], $data['properties'], (int) ($data['limit'] ?? 6), $data['excluded_ids'] ?? [])]))->response();
+        return (new MatchScoreResource(['recommendations' => $rank->handle(
+            $data['criteria'],
+            $data['properties'],
+            (int) ($data['limit'] ?? 6),
+            $data['excluded_ids'] ?? [],
+        )]))->response();
     }
 
     public function destroy(Request $request, MatchProfile $matchProfile, DeleteMatchProfile $delete): Response
